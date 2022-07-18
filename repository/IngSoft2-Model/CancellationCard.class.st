@@ -20,25 +20,23 @@ CancellationCard >> = anotherCard [
 		  owner = anotherCard owner ]
 ]
 
-{ #category : #accessing }
-CancellationCard >> a: spaceship playsCardIn: game aimingAt: aPlayedPermanentCard [
-
-	game playedCardStack remove: aPlayedPermanentCard.
-	^ PlayCardEvent
-			 using: (self class ownedBy: spaceship)
-			 aimedAt: aPlayedPermanentCard
-]
-
 { #category : #comparing }
 CancellationCard >> hash [
 
-	self className hash bitXor:  self owner hash 
+	^ self className hash bitXor: self owner hash
 ]
 
 { #category : #initialization }
 CancellationCard >> initializeOwnedBy: aSpaceship [
 
 	owner := aSpaceship.
+]
+
+{ #category : #accessing }
+CancellationCard >> isPlayedIn: game aimingAt: aPlayedPermanentCard [
+
+	game cardHandler cancelEffectOf: aPlayedPermanentCard.
+	^ PlayCardEvent using: self aimedAt: aPlayedPermanentCard
 ]
 
 { #category : #accessing }

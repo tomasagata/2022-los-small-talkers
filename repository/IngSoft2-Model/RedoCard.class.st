@@ -20,22 +20,24 @@ RedoCard >> = anotherCard [
 		  owner = anotherCard owner ]
 ]
 
-{ #category : #accessing }
-RedoCard >> a: spaceship playsCardIn: game aimingAt: target [
-
-	^ game lastPlayedCard a: spaceship playsCardIn: game aimingAt: target
-]
-
 { #category : #comparing }
 RedoCard >> hash [
 
-	self className hash bitXor:  self owner hash 
+	^ (self className hash bitXor: self owner hash)
 ]
 
 { #category : #initialization }
 RedoCard >> initializeOwnedBy: aSpaceship [
 
 	owner := aSpaceship.
+]
+
+{ #category : #accessing }
+RedoCard >> isPlayedIn: game aimingAt: target [
+
+	^ (game lastPlayedCard ownedBy: owner)
+		  isPlayedIn: game
+		  aimingAt: target
 ]
 
 { #category : #accessing }

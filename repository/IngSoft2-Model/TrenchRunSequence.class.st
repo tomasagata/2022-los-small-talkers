@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'elements',
 		'counter',
-		'previous'
+		'previous',
+		'current'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -23,7 +24,13 @@ TrenchRunSequence >> = anotherTrenchRunSequence [
 { #category : #private }
 TrenchRunSequence >> counterAdd [
 
-	counter := counter + 1
+	counter := (counter \\ (elements size)) + 1
+]
+
+{ #category : #accessing }
+TrenchRunSequence >> current [
+
+	^ current
 ]
 
 { #category : #accessing }
@@ -40,22 +47,42 @@ TrenchRunSequence >> hash [
 
 { #category : #initialization }
 TrenchRunSequence >> initializeWithAll: sequenceableElements [
-	elements := sequenceableElements.
+
+	elements := sequenceableElements asOrderedCollection.
 	counter := 0
 ]
 
 { #category : #accessing }
 TrenchRunSequence >> next [
-	
+
 	self counterAdd.
-	previous := elements at: counter - 1 \\ elements size + 1.
-	^previous
+	previous := current.
+	current := elements at: counter.
+	^ current
 ]
 
-{ #category : #accessing }
-TrenchRunSequence >> previous [
+{ #category : #'repeating last' }
+TrenchRunSequence >> repeatLastOnNext [
 
-	previous ifNil: [ Error signal: 'Trying to access previous element in sequence when inexistent' ].
-	^ previous 
-	
+	counter := counter -1
+]
+
+{ #category : #converting }
+TrenchRunSequence >> reversed [
+
+	| newSequence |
+	newSequence := self class withAll: elements reversed.
+	newSequence skipTo: current.
+	^ newSequence
+]
+
+{ #category : #'sequence skipping' }
+TrenchRunSequence >> skipTo: sequenceableElement [
+
+	| wantedObjectIndex |
+	wantedObjectIndex := self elements
+		                     indexOf: sequenceableElement
+		                     ifAbsent: [ 
+		                     Error signal: 'Element not in sequence' ].
+	(wantedObjectIndex - counter) timesRepeat: [self next]
 ]

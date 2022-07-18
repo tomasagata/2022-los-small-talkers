@@ -1,5 +1,5 @@
 Class {
-	#name : #RepeatCard,
+	#name : #DoubleCard,
 	#superclass : #InstantCard,
 	#instVars : [
 		'owner'
@@ -8,41 +8,40 @@ Class {
 }
 
 { #category : #'instance creation' }
-RepeatCard class >> ownedBy: aSpaceship [
+DoubleCard class >> ownedBy: spaceship [
 
-	^ self new initializeOwnedBy: aSpaceship.
+	^ self new initializeOwnedBy: spaceship.
+	
 ]
 
 { #category : #comparing }
-RepeatCard >> = anotherCard [
+DoubleCard >> = anotherCard [
 
 	^ (self className match: anotherCard className) and: [ 
 		  owner = anotherCard owner ]
 ]
 
 { #category : #comparing }
-RepeatCard >> hash [
+DoubleCard >> hash [
 
 	^ self className hash bitXor:  self owner hash 
 ]
 
 { #category : #initialization }
-RepeatCard >> initializeOwnedBy: aSpaceship [
+DoubleCard >> initializeOwnedBy: aSpaceship [
 
-	owner := aSpaceship.
+	owner := aSpaceship
 ]
 
 { #category : #accessing }
-RepeatCard >> isPlayedIn: game aimingAt: target [
+DoubleCard >> isPlayedIn: game [
 
-	game lastLandsOnSquareEvent applyEffectTo: target from: game.
-	^ PlayCardEvent
-		  using: self
-		  aimedAt: target
+	game turnHandler repeatTurn.
+	^ PlayCardEvent using: self aimedAt: game turnHandler currentSpaceshipTurn
 ]
 
 { #category : #accessing }
-RepeatCard >> owner [ 
+DoubleCard >> owner [
 
 	^ owner
 ]
